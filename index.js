@@ -2,13 +2,15 @@ import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
 import mongooseConnect from './src/database/connection.js';
+import transactionRouter from './src/routes/transaction.js';
+import cors from "cors";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use('/', (req, res) => {
-  res.send("hello")
-});
+app.use(cors());
+app.use(express.json());
+app.use('/transactions', transactionRouter);
 
 mongooseConnect()
 .then(() => {
