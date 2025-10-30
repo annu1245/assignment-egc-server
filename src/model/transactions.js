@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
-import categories from "./categories";
+import categories from "./categories.js";
+import types from "./types.js";
 
 const transactionSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ["income", "expense"],
+        enum: Object.values(types),
         required: true,
     },
     amount: {
@@ -17,7 +18,7 @@ const transactionSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: categories,
+        enum: Object.values(categories),
         required: true,
     },
     date: {
