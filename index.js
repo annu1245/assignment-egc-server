@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import mongooseConnect from "./src/database/connection.js";
 import transactionRouter from "./src/routes/transaction.js";
+import errorHandler from "./src/middleware/errorHandler.js";
+import responseHandler from "./src/middleware/responseHandler.js";
 import cors from "cors";
 
 const app = express();
@@ -10,7 +12,9 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(responseHandler);
 app.use("/transactions", transactionRouter);
+app.use(errorHandler);
 
 mongooseConnect()
     .then(() => {
