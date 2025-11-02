@@ -3,10 +3,27 @@ import ApiError from "../utils/ApiError.js";
 import { createTransactionValidator, transactionIdValidator, updateTransactionValidator } from "../utils/validator.js";
 import categories from "../model/categories.js";
 
-export async function getTransation(req, res) {
+export async function getTransations(req, res) {
     try {
-        const transactions = await Transaction.find();
-        return res.success(200, "All Transactions", transactions);
+        const filter = {};
+        if (req.query.type) {
+            filter.type = req.query.type;
+        }
+        if (req.query.category) {
+            filter.category = req.query.category;
+        }
+        if (req.query.date) {
+            const startOfDay = new Date(req.query.date); 
+            const endOfDay = new Date(req.query.date);
+            endOfDay.setDate(endOfDay.getDate() + 1);
+            filter.date = {
+                $gte: startOfDay,
+                $lt: endOfDay,
+            }
+        }
+
+        const transactions = await Transaction.find(filter);
+        return res.success(200, "All Transactions", { transactions, length: transactions.length });
     } catch (error) {
         console.error(error);
         throw new ApiError(500, error.message);
