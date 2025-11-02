@@ -12,10 +12,9 @@ export async function getTransations(req, res) {
         if (req.query.category) {
             filter.category = req.query.category;
         }
-        if (req.query.date) {
-            const startOfDay = new Date(req.query.date);
-            const endOfDay = new Date(req.query.date);
-            endOfDay.setDate(endOfDay.getDate() + 1);
+        if (req.query.startDate || req.query.endDate) {
+            const startOfDay = req.query.startDate ? new Date(req.query.startDate) : new Date();
+            const endOfDay = req.query.endDate ? new Date(req.query.endDate) : new Date();
             filter.date = {
                 $gte: startOfDay,
                 $lt: endOfDay,
