@@ -13,16 +13,16 @@ export async function getTransations(req, res) {
             filter.category = req.query.category;
         }
         if (req.query.date) {
-            const startOfDay = new Date(req.query.date); 
+            const startOfDay = new Date(req.query.date);
             const endOfDay = new Date(req.query.date);
             endOfDay.setDate(endOfDay.getDate() + 1);
             filter.date = {
                 $gte: startOfDay,
                 $lt: endOfDay,
-            }
+            };
         }
 
-        const transactions = await Transaction.find(filter);
+        const transactions = await Transaction.find(filter).sort({ date: -1 }).exec();
         return res.success(200, "All Transactions", { transactions, length: transactions.length });
     } catch (error) {
         console.error(error);
