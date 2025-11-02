@@ -1,7 +1,7 @@
 import Transaction from "../model/transactions.js";
 import ApiError from "../utils/ApiError.js";
 import { createTransactionValidator, transactionIdValidator, updateTransactionValidator } from "../utils/validator.js";
-import validator from "validator";
+import categories from "../model/categories.js";
 
 export async function getTransation(req, res) {
     try {
@@ -14,15 +14,14 @@ export async function getTransation(req, res) {
 }
 
 export async function getTransactionById(req, res) {
+    const { id } = req.params;
+    transactionIdValidator(id);
     try {
-      const { id } = req.params;
-      transactionIdValidator(id);
-
-      const transation = await Transaction.findById(id);
-       if (!transation) {
-        throw new ApiError(404, "Transaction not found");
-    }
-      return res.success(200, "Transaction", transation);
+        const transation = await Transaction.findById(id);
+        if (!transation) {
+            throw new ApiError(404, "Transaction not found");
+        }
+        return res.success(200, "Transaction", transation);
     } catch (error) {
         console.error(error);
         throw new ApiError(500, error.message);
@@ -53,12 +52,16 @@ export async function updateTransaction(req, res) {
     updateTransactionValidator(req);
     const { amount, description, category, date } = req.body;
 
-    const updatedTransaction = await Transaction.findByIdAndUpdate(id, {
-        amount,
-        description,
-        category,
-        date,
-    }, { new: true });
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+        id,
+        {
+            amount,
+            description,
+            category,
+            date,
+        },
+        { new: true }
+    );
 
     if (!updatedTransaction) {
         throw new ApiError(404, "Transaction not found");
@@ -75,4 +78,13 @@ export async function deleteTransaction(req, res) {
         throw new ApiError(404, "Transaction not found");
     }
     return res.success(200, "Transaction Deleted Successfully");
+}
+
+export async function getCategories(req, res) {
+    try {
+        return res.success(200, "Categories", { categories });
+    } catch (error) {
+        console.error(error);
+        throw new ApiError(500, error.message);
+    }
 }

@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(responseHandler);
-app.use("/transactions", transactionRouter);
+app.use("/api/transactions", transactionRouter);
 app.use(errorHandler);
 
 mongooseConnect()
